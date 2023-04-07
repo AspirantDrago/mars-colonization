@@ -1,6 +1,8 @@
+from typing import List, Optional
+from datetime import timedelta
+
 import sqlalchemy as sa
 from sqlalchemy import orm
-from datetime import timedelta
 
 from sqlalchemy_serializer import SerializerMixin
 
@@ -26,19 +28,19 @@ class Jobs(SqlAlchemyBase, SerializerMixin):
                                   secondary="association",
                                   backref="jobs")
 
-    def set_categories(self, session: orm.Session, categories: list[str]) -> None:
+    def set_categories(self, session: orm.Session, categories: List[str]) -> None:
         from .categories import Category
 
         self.categories = [session.query(Category).get(int(_id)) for _id in categories]
 
-    def get_categories_id(self) -> list[str]:
+    def get_categories_id(self) -> List[str]:
         return [str(category.id) for category in self.categories]
 
     def get_categories(self, separator: str) -> str:
         return separator.join(map(str, self.categories))
 
     @property
-    def duration(self) -> timedelta | None:
+    def duration(self) -> Optional[timedelta]:
         if self.end_date is None or self.start_date is None:
             return None
         return self.end_date - self.start_date
