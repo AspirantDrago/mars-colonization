@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, redirect, abort, make_response, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_restful import Api
@@ -171,7 +173,8 @@ def main():
     api.add_resource(users_resource.UsersListResource, '/api/v2/users')
     api.add_resource(jobs_resource.JobsResource, '/api/v2/jobs/<int:job_id>')
     api.add_resource(jobs_resource.JobsListResource, '/api/v2/jobs')
-    app.run(host='0.0.0.0', port=80, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
 
 
 if __name__ == '__main__':
